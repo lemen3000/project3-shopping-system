@@ -5,20 +5,36 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 
 public class ShoppingSystem {
-    private List<Adiministrator> adminList = new ArrayList<>();
+    private List<Administrator> adminList = new ArrayList<>();
     private List<Customer> customerList = new ArrayList<>();
     private List<Goods> goodsRepository = new ArrayList<>();
     private Scanner scanner = new Scanner(System.in);
 
-    // 初始化测试数据
-    public void initSystemData(){
-        // 测试管理员
-        adminList.add(new Adiministrator(1,"admin","ynuinfo#777","13800138000","admin@qq.com",LocalDateTime.now(),0,false));
-        // 测试顾客
+    // 启动加载数据：文件有就读文件，没有就初始化默认数据
+    public void loadData() {
+        TextFilePersistence.DataPack data = TextFilePersistence.loadAll();
+        adminList = data.admins;
+        customerList = data.customers;
+        goodsRepository = data.goods;
+
+        if (adminList.isEmpty() && customerList.isEmpty() && goodsRepository.isEmpty()) {
+            initDefaultData();
+            saveData();
+            System.out.println("首次运行，已初始化默认测试数据");
+        }
+    }
+
+    // 默认测试数据
+    private void initDefaultData() {
+        adminList.add(new Administrator(1,"admin","ynuinfo#777","13800138000","admin@qq.com",LocalDateTime.now(),0,false));
         customerList.add(new Customer(1001,"user1","123456","13900139000","user1@qq.com",LocalDateTime.now(),0,false));
-        // 测试商品
-        goodsRepository.add(new Goods(101,"笔记本电脑","联想","2026‑01‑01","Y7000",4000,5500,20));
-        goodsRepository.add(new Goods(102,"手机","华为","2026‑02‑01","Mate60",3000,4200,30));
+        goodsRepository.add(new Goods(101,"笔记本电脑","联想","2026-01-01","Y7000",4000,5500,20));
+        goodsRepository.add(new Goods(102,"手机","华为","2026-02-01","Mate60",3000,4200,30));
+    }
+
+    // 退出保存数据到文本文件
+    public void saveData() {
+        TextFilePersistence.saveAll(adminList, customerList, goodsRepository);
     }
 
     public void runMainMenu(){
@@ -38,7 +54,8 @@ public class ShoppingSystem {
                 continue;
             }
             if(op == 0){
-                System.out.println("程序退出！");
+                saveData();
+                System.out.println("数据已保存，程序退出！");
                 break;
             }
             if(op == 1){
@@ -51,7 +68,6 @@ public class ShoppingSystem {
         }
     }
 
-    // 注册菜单
     private void registerMenu(){
         System.out.println("====注册====");
         System.out.println("1.注册顾客 2.注册管理员");
@@ -80,13 +96,12 @@ public class ShoppingSystem {
             System.out.println("顾客注册成功！");
         }else if(select ==2){
             int newId = adminList.size()+1;
-            Adiministrator a = new Adiministrator(newId, name, pwd, phone, email, LocalDateTime.now(),0,false);
+            Administrator a = new Administrator(newId, name, pwd, phone, email, LocalDateTime.now(),0,false);
             adminList.add(a);
             System.out.println("管理员注册成功！");
         }
     }
 
-    // 登录菜单
     private void loginMenu(){
         System.out.print("用户名：");
         String name = scanner.nextLine();
@@ -94,8 +109,7 @@ public class ShoppingSystem {
         String password = scanner.nextLine();
         boolean loginSuccess = false;
 
-        // 遍历管理员
-        for(Adiministrator admin : adminList){
+        for(Administrator admin : adminList){
             if(admin.isLock()){
                 System.out.println("该管理员账号已锁定！");
                 continue;
@@ -107,7 +121,6 @@ public class ShoppingSystem {
             }
         }
         if(!loginSuccess){
-            //遍历顾客
             for(Customer cust : customerList){
                 if(cust.isLock()){
                     System.out.println("该顾客账号已锁定！");
@@ -125,8 +138,7 @@ public class ShoppingSystem {
         }
     }
 
-    // 管理员菜单
-    private void adminMenu(Adiministrator admin){
+    private void adminMenu(Administrator admin){
         while(true){
             System.out.println("\n====管理员菜单====");
             System.out.println("1.查看全部商品");
@@ -186,7 +198,6 @@ public class ShoppingSystem {
         }
     }
 
-    // 顾客菜单
     private void customerMenu(Customer cust){
         while(true){
             System.out.println("\n====顾客菜单====");

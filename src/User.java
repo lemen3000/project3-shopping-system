@@ -47,22 +47,18 @@ public abstract class User implements UserOperation {
 
     public abstract void showInfo();
 
-    // 重置随机密码
     public String resetRandomPwd() {
         return "123456";
     }
 
-    // 密码规则校验
     public boolean checkPasswordRule(String password) {
         return password.length() >= 6;
     }
 
-    // 用户名规则校验
     public boolean checkUserNameRule(String username) {
         return username.length() > 0;
     }
 
-    // 忘记密码验证用户名+邮箱
     public boolean verifyUserAndEmail(String uname, String mail) {
         return uname.equals(this.name) && mail.equals(this.email);
     }

@@ -47,7 +47,6 @@ public class Customer extends User {
         System.out.println("【顾客】账号："+getName()+" 手机号："+getPhone()+" 等级："+rankStr);
     }
 
-    // 购物车操作
     public void addCart(int goodsId, int num, List<Goods> store){
         for(Goods g : store){
             if(g.getGoodsId() == goodsId){
@@ -67,9 +66,7 @@ public class Customer extends User {
         shoppingCart.updateItemCount(goodsId, newNum);
     }
 
-    // 结账，扣库存
     public boolean checkout(List<Goods> store){
-        // 校验库存
         for(CartItem ci : shoppingCart.getItemList()){
             Goods g = ci.getGoods();
             if(g.getStock() < ci.getBuyNumber()){
@@ -77,15 +74,12 @@ public class Customer extends User {
                 return false;
             }
         }
-        // 扣库存
         for(CartItem ci : shoppingCart.getItemList()){
             Goods g = ci.getGoods();
             g.setStock(g.getStock() - ci.getBuyNumber());
         }
-        // 计算总消费
         double total = shoppingCart.calculateTotal();
         this.totalConsume += total;
-        // 更新等级
         if(totalConsume >= 500){
             customerRank = 3;
         }else if(totalConsume >= 200){

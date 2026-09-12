@@ -1,9 +1,9 @@
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Adiministrator extends User {
+public class Administrator extends User {
 
-    public Adiministrator(int id, String name, String password, String phone, String email, LocalDateTime registerTime, int errorCount, boolean isLock) {
+    public Administrator(int id, String name, String password, String phone, String email, LocalDateTime registerTime, int errorCount, boolean isLock) {
         super(id, name, password, phone, email, registerTime, errorCount, isLock);
     }
 

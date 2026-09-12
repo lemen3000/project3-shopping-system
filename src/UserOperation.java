@@ -3,3 +3,4 @@ public interface UserOperation {
     void logout();
     boolean modifyPassword(String oldPassword, String newPassword);
 }
+
