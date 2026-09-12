@@ -1,7 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingCart {
+public class ShoppingCart implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private List<CartItem> itemList = new ArrayList<>();
 
     public void addItem(Goods goods, int num){

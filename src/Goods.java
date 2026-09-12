@@ -1,4 +1,8 @@
-public class Goods {
+import java.io.Serializable;
+
+public class Goods implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int goodsId;
     private String goodsName;
     private String manufacturer;
@@ -40,3 +44,4 @@ public class Goods {
     public int getStock() { return stock; }
     public void setStock(int stock) { this.stock = stock; }
 }
+

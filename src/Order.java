@@ -1,7 +1,10 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Order {
+public class Order implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String orderNo;
     private LocalDateTime createTime;
     private List<CartItem> itemList;

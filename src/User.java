@@ -1,6 +1,9 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public abstract class User implements UserOperation {
+public abstract class User implements UserOperation, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int id;
     private String name;
     private String password;
@@ -63,3 +66,4 @@ public abstract class User implements UserOperation {
         return uname.equals(this.name) && mail.equals(this.email);
     }
 }
+
