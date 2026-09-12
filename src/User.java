@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 public abstract class User implements UserOperation, Serializable {
     private static final long serialVersionUID = 1L;
@@ -50,20 +51,45 @@ public abstract class User implements UserOperation, Serializable {
 
     public abstract void showInfo();
 
+    // 生成符合规则的随机密码
     public String resetRandomPwd() {
-        return "123456";
+        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lower = "abcdefghijklmnopqrstuvwxyz";
+        String num = "0123456789";
+        String symbol = "!@#$%&*()_+-=.";
+        String all = upper + lower + num + symbol;
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        sb.append(upper.charAt(random.nextInt(upper.length())));
+        sb.append(lower.charAt(random.nextInt(lower.length())));
+        sb.append(num.charAt(random.nextInt(num.length())));
+        sb.append(symbol.charAt(random.nextInt(symbol.length())));
+        for (int i = 0; i < 5; i++) {
+            sb.append(all.charAt(random.nextInt(all.length())));
+        }
+        return sb.toString();
     }
 
+    // 密码规则：长度>8，包含大小写字母、数字、标点符号
     public boolean checkPasswordRule(String password) {
-        return password.length() >= 6;
+        if (password == null || password.length() <= 8) return false;
+        boolean hasUpper = false, hasLower = false, hasNum = false, hasSymbol = false;
+        for (char c : password.toCharArray()) {
+            if (Character.isUpperCase(c)) hasUpper = true;
+            else if (Character.isLowerCase(c)) hasLower = true;
+            else if (Character.isDigit(c)) hasNum = true;
+            else hasSymbol = true;
+        }
+        return hasUpper && hasLower && hasNum && hasSymbol;
     }
 
+    // 用户名规则：长度≥5
     public boolean checkUserNameRule(String username) {
-        return username.length() > 0;
+        return username != null && username.length() >= 5;
     }
 
+    // 验证用户名+邮箱
     public boolean verifyUserAndEmail(String uname, String mail) {
         return uname.equals(this.name) && mail.equals(this.email);
     }
 }
-
