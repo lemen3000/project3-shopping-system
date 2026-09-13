@@ -1,47 +1,37 @@
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
-public class BinaryPersistence {
-    private static final String DATA_FILE = "shop_data.dat";
+public class BinaryPersistence implements Persistence {
+    private static final String FILE_NAME = "shop_data.dat";
 
-    public static void saveAll(List<Administrator> admins, List<Customer> customers, List<Goods> goods) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(DATA_FILE))) {
+    @Override
+    public void saveAll(List<Administrator> admins, List<Customer> customers, List<Goods> goods) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(admins);
             oos.writeObject(customers);
             oos.writeObject(goods);
         } catch (IOException e) {
-            System.out.println("保存数据失败：" + e.getMessage());
+            LogUtil.error("保存二进制文件失败", e);
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    public static DataPack loadAll() {
-        File file = new File(DATA_FILE);
-        if (!file.exists()) {
-            return new DataPack(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        }
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return new DataPack(
-                    (List<Administrator>) ois.readObject(),
-                    (List<Customer>) ois.readObject(),
-                    (List<Goods>) ois.readObject()
-            );
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("加载数据失败：" + e.getMessage());
-            return new DataPack(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        }
-    }
+    public DataPack loadAll() {
+        List<Administrator> admins = new java.util.ArrayList<>();
+        List<Customer> customers = new java.util.ArrayList<>();
+        List<Goods> goods = new java.util.ArrayList<>();
 
-    public static class DataPack {
-        public List<Administrator> admins;
-        public List<Customer> customers;
-        public List<Goods> goods;
-        public DataPack(List<Administrator> admins, List<Customer> customers, List<Goods> goods) {
-            this.admins = admins;
-            this.customers = customers;
-            this.goods = goods;
+        File file = new File(FILE_NAME);
+        if (file.exists()) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+                admins = (List<Administrator>) ois.readObject();
+                customers = (List<Customer>) ois.readObject();
+                goods = (List<Goods>) ois.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                LogUtil.error("读取二进制文件失败", e);
+            }
         }
+        return new DataPack(admins, customers, goods);
     }
 }
-
