@@ -11,11 +11,12 @@ public class ShoppingSystem {
     private Scanner scanner = new Scanner(System.in);
 
     public void loadData() {
-        BinaryPersistence.DataPack data = BinaryPersistence.loadAll();
+        ExcelPersistence.DataPack data = ExcelPersistence.loadAll();
         adminList = data.admins;
         customerList = data.customers;
         goodsRepository = data.goods;
 
+        // 首次运行无文件时，初始化默认数据并保存
         if (adminList.isEmpty() && customerList.isEmpty() && goodsRepository.isEmpty()) {
             initDefaultData();
             saveData();
@@ -31,7 +32,7 @@ public class ShoppingSystem {
     }
 
     public void saveData() {
-        BinaryPersistence.saveAll(adminList, customerList, goodsRepository);
+        ExcelPersistence.saveAll(adminList, customerList, goodsRepository);
     }
 
     // 主菜单
