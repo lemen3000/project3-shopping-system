@@ -11,7 +11,7 @@ public class ShoppingSystem {
     private Scanner scanner = new Scanner(System.in);
 
     public void loadData() {
-        ExcelPersistence.DataPack data = ExcelPersistence.loadAll();
+        JdbcPersistence.DataPack data = JdbcPersistence.loadAll();
         adminList = data.admins;
         customerList = data.customers;
         goodsRepository = data.goods;
@@ -25,14 +25,20 @@ public class ShoppingSystem {
     }
 
     private void initDefaultData() {
-        adminList.add(new Administrator(1,"admin","ynuinfo#777","13800138000","admin@qq.com",LocalDateTime.now(),0,false));
-        customerList.add(new Customer(1001,"user123","User@12345","13900139000","user1@qq.com",LocalDateTime.now(),0,false));
-        goodsRepository.add(new Goods(101,"笔记本电脑","联想","2026-01-01","Y7000",4000,5500,20));
-        goodsRepository.add(new Goods(102,"手机","华为","2026-02-01","Mate60",3000,4200,30));
+        // 管理员默认密码加密后存入
+        adminList.add(new Administrator(1, "admin", PasswordUtil.encrypt("ynuinfo#777"),
+                "13800138000", "admin@qq.com", LocalDateTime.now(), 0, false));
+        // 顾客默认密码加密后存入
+        customerList.add(new Customer(1001, "user123", PasswordUtil.encrypt("User@12345"),
+                "13900139000", "user1@qq.com", LocalDateTime.now(), 0, false));
+
+        // 商品数据无需修改
+        goodsRepository.add(new Goods(101, "笔记本电脑", "联想", "2026-01-01", "model", 5000.0, 6999.0, 10));
+        goodsRepository.add(new Goods(102, "手机", "华为", "2026-02-01", "Mate", 3000.0, 4999.0, 20));
     }
 
     public void saveData() {
-        ExcelPersistence.saveAll(adminList, customerList, goodsRepository);
+        JdbcPersistence.saveAll(adminList, customerList, goodsRepository);
     }
 
     // 主菜单
@@ -101,15 +107,18 @@ public class ShoppingSystem {
         System.out.print("邮箱：");
         String email = scanner.nextLine();
 
+        // 密码加密后再存入对象
+        String encryptedPwd = PasswordUtil.encrypt(pwd);
+
         if(select == 1){
             int newId = customerList.isEmpty() ? 1001 : customerList.get(customerList.size()-1).getId() + 1;
-            Customer c = new Customer(newId, name, pwd, phone, email, LocalDateTime.now(),0,false);
+            Customer c = new Customer(newId, name, encryptedPwd, phone, email, LocalDateTime.now(),0,false);
             customerList.add(c);
             System.out.println("顾客注册成功！");
             saveData();
         }else if(select ==2){
             int newId = adminList.isEmpty() ? 1 : adminList.get(adminList.size()-1).getId() + 1;
-            Administrator a = new Administrator(newId, name, pwd, phone, email, LocalDateTime.now(),0,false);
+            Administrator a = new Administrator(newId, name, encryptedPwd, phone, email, LocalDateTime.now(),0,false);
             adminList.add(a);
             System.out.println("管理员注册成功！");
             saveData();
@@ -126,23 +135,26 @@ public class ShoppingSystem {
 
         for(Customer cust : customerList){
             if(cust.verifyUserAndEmail(name, email)){
-                String newPwd = cust.resetRandomPwd();
-                cust.setPassword(newPwd);
+                // 生成随机密码后加密保存
+                String newRawPwd = cust.resetRandomPwd();
+                String encryptedPwd = PasswordUtil.encrypt(newRawPwd);
+                cust.setPassword(encryptedPwd);
                 cust.setErrorCount(0);
                 cust.setLock(false);
                 saveData();
-                System.out.println("验证成功！新密码已重置为：" + newPwd);
+                System.out.println("验证成功！新密码已重置为：" + newRawPwd);
                 return;
             }
         }
         for(Administrator admin : adminList){
             if(admin.verifyUserAndEmail(name, email)){
-                String newPwd = admin.resetRandomPwd();
-                admin.setPassword(newPwd);
+                String newRawPwd = admin.resetRandomPwd();
+                String encryptedPwd = PasswordUtil.encrypt(newRawPwd);
+                admin.setPassword(encryptedPwd);
                 admin.setErrorCount(0);
                 admin.setLock(false);
                 saveData();
-                System.out.println("验证成功！新密码已重置为：" + newPwd);
+                System.out.println("验证成功！新密码已重置为：" + newRawPwd);
                 return;
             }
         }
@@ -162,8 +174,10 @@ public class ShoppingSystem {
                 System.out.println("该管理员账号已锁定！");
                 return;
             }
-            if(admin.login(name,password)){
+            // 改用哈希验证，替代原实体类明文login
+            if(admin.getName().equals(name) && PasswordUtil.verify(password, admin.getPassword())){
                 System.out.println("管理员登录成功！");
+                admin.setErrorCount(0);
                 adminMenu(admin);
                 loginSuccess = true;
                 saveData();
@@ -176,8 +190,10 @@ public class ShoppingSystem {
                     System.out.println("该顾客账号已锁定！");
                     return;
                 }
-                if(cust.login(name,password)){
+                // 改用哈希验证
+                if(cust.getName().equals(name) && PasswordUtil.verify(password, cust.getPassword())){
                     System.out.println("顾客登录成功！");
+                    cust.setErrorCount(0);
                     customerMenu(cust);
                     loginSuccess = true;
                     saveData();
@@ -186,8 +202,34 @@ public class ShoppingSystem {
             }
         }
         if(!loginSuccess){
+            // 密码错误累计次数
+            for(Administrator admin : adminList){
+                if(admin.getName().equals(name)){
+                    admin.setErrorCount(admin.getErrorCount() + 1);
+                    if(admin.getErrorCount() >= 3){
+                        admin.setLock(true);
+                        System.out.println("密码错误3次，账号已被锁定！");
+                    }else{
+                        System.out.println("账号或密码错误！剩余尝试次数：" + (3 - admin.getErrorCount()));
+                    }
+                    saveData();
+                    return;
+                }
+            }
+            for(Customer cust : customerList){
+                if(cust.getName().equals(name)){
+                    cust.setErrorCount(cust.getErrorCount() + 1);
+                    if(cust.getErrorCount() >= 3){
+                        cust.setLock(true);
+                        System.out.println("密码错误3次，账号已被锁定！");
+                    }else{
+                        System.out.println("账号或密码错误！剩余尝试次数：" + (3 - cust.getErrorCount()));
+                    }
+                    saveData();
+                    return;
+                }
+            }
             System.out.println("账号或密码错误！");
-            saveData();
         }
     }
 
@@ -340,7 +382,10 @@ public class ShoppingSystem {
         Customer cust = null;
         for(Customer c : customerList){ if(c.getId() == cid){ cust = c; break; }}
         if(cust == null){ System.out.println("顾客不存在！"); return; }
-        System.out.println("密码重置成功！新密码为：" + admin.resetCustomerPassword(cust));
+        String newRawPwd = admin.resetCustomerPassword(cust);
+        // 重置后加密保存
+        cust.setPassword(PasswordUtil.encrypt(newRawPwd));
+        System.out.println("密码重置成功！新密码为：" + newRawPwd);
         saveData();
     }
 
@@ -362,7 +407,10 @@ public class ShoppingSystem {
         System.out.print("旧密码：");
         String oldPwd = scanner.nextLine();
         System.out.print("新密码：");
-        if(admin.modifyPassword(oldPwd,scanner.nextLine())){
+        String newPwd = scanner.nextLine();
+        // 先验证旧密码，再加密新密码
+        if(PasswordUtil.verify(oldPwd, admin.getPassword()) && admin.checkPasswordRule(newPwd)){
+            admin.setPassword(PasswordUtil.encrypt(newPwd));
             System.out.println("密码修改成功");
             saveData();
         }else System.out.println("旧密码错误或新密码不符合规则");
@@ -474,7 +522,10 @@ public class ShoppingSystem {
         System.out.print("旧密码：");
         String oldPwd = scanner.nextLine();
         System.out.print("新密码：");
-        if(cust.modifyPassword(oldPwd,scanner.nextLine())){
+        String newPwd = scanner.nextLine();
+        // 验证旧密码+加密新密码
+        if(PasswordUtil.verify(oldPwd, cust.getPassword()) && cust.checkPasswordRule(newPwd)){
+            cust.setPassword(PasswordUtil.encrypt(newPwd));
             System.out.println("密码修改成功");
             saveData();
         }else System.out.println("旧密码错误或新密码不符合规则");
