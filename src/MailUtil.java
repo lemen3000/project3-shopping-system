@@ -28,11 +28,6 @@ public class MailUtil {
             LogUtil.error("邮件配置加载失败", e);
             enable = false;
         }
-        enable = true;
-        smtpHost = "smtp.qq.com";
-        smtpPort = 587;
-        sender = "qiuchong6@qq.com";
-        authCode = "mxhvtjjwqcdkfejj";
     }
 
     /**
@@ -74,4 +69,3 @@ public class MailUtil {
         }
     }
 }
-

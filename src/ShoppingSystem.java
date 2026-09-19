@@ -1,8 +1,11 @@
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class ShoppingSystem {
@@ -10,13 +13,28 @@ public class ShoppingSystem {
     private List<Customer> customerList = new ArrayList<>();
     private List<Goods> goodsRepository = new ArrayList<>();
     private final Scanner scanner = new Scanner(System.in);
-    // 面向接口编程，不依赖具体存储实现
+
     private final Persistence persistence;
 
     public ShoppingSystem() {
         // 通过工厂获取持久化实例
         this.persistence = PersistenceFactory.getPersistence();
         LogUtil.info("系统启动，持久化方式：" + persistence.getClass().getSimpleName());
+
+        // ========== 启动邮件下单服务 ==========
+        Properties prop = new Properties();
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("config.properties")) {
+            if (is != null) {
+                prop.load(is);
+            }
+        } catch (IOException e) {
+            LogUtil.error("读取配置失败", e);
+        }
+        boolean imapEnable = Boolean.parseBoolean(prop.getProperty("mail.imap.enable", "false"));
+        if (imapEnable) {
+            new MailOrderService(this).start();
+        }
+        // ========================================
     }
 
     public void loadData() {
@@ -50,6 +68,106 @@ public class ShoppingSystem {
         persistence.saveAll(adminList, customerList, goodsRepository);
     }
 
+    // ========== 容错输入辅助方法（修复：输入非数字时提示重试，程序不退出） ==========
+    /**
+     * 读取一个整数，输入非数字时不会抛出异常导致程序退出。
+     *
+     * @param tip        提示语
+     * @param defaultVal 输入流结束（EOF）时返回的默认值
+     * @return 用户输入的整数
+     */
+    private int readInt(String tip, int defaultVal) {
+        while (true) {
+            System.out.print(tip);
+            try {
+                if (!scanner.hasNextLine()) {
+                    return defaultVal;
+                }
+                String text = scanner.nextLine().trim();
+                if (text.isEmpty()) {
+                    System.out.println("输入不能为空，请输入数字！");
+                    continue;
+                }
+                return Integer.parseInt(text);
+            } catch (NumberFormatException | java.util.NoSuchElementException e) {
+                System.out.println("输入格式错误，请输入数字！");
+            }
+        }
+    }
+
+    /**
+     * 读取一个浮点数，输入非数字时不会抛出异常导致程序退出。
+     *
+     * @param tip        提示语
+     * @param defaultVal 输入流结束（EOF）时返回的默认值
+     * @return 用户输入的浮点数
+     */
+    private double readDouble(String tip, double defaultVal) {
+        while (true) {
+            System.out.print(tip);
+            try {
+                if (!scanner.hasNextLine()) {
+                    return defaultVal;
+                }
+                String text = scanner.nextLine().trim();
+                if (text.isEmpty()) {
+                    System.out.println("输入不能为空，请输入数字！");
+                    continue;
+                }
+                return Double.parseDouble(text);
+            } catch (NumberFormatException | java.util.NoSuchElementException e) {
+                System.out.println("输入格式错误，请输入正确的数字！");
+            }
+        }
+    }
+
+    /**
+     * 读取一个指定范围内的菜单选项，输入非数字或越界时返回 -1 由调用方重试。
+     *
+     * @param min 最小可选值
+     * @param max 最大可选值
+     * @return 合法的选项值，非法时返回 -1
+     */
+    private int readMenuChoice(int min, int max) {
+        System.out.print("请输入选择：");
+        try {
+            if (!scanner.hasNextLine()) {
+                return 0;
+            }
+            String text = scanner.nextLine().trim();
+            int value = Integer.parseInt(text);
+            if (value < min || value > max) {
+                System.out.println("输入无效，请输入 " + min + " 到 " + max + " 之间的数字！");
+                return -1;
+            }
+            return value;
+        } catch (NumberFormatException | java.util.NoSuchElementException e) {
+            System.out.println("输入格式错误，请输入数字！");
+            return -1;
+        }
+    }
+    // ===========================================================================
+
+    // ========== 供邮件下单服务调用的公共方法 ==========
+    public List<Customer> getCustomerList() {
+        return customerList;
+    }
+
+    public List<Goods> getGoodsRepository() {
+        return goodsRepository;
+    }
+
+    public synchronized void saveDataInternal() {
+        persistence.saveAll(adminList, customerList, goodsRepository);
+    }
+
+    /**
+     * 获取当前持久化方式的名称，用于日志输出
+     */
+    public String getPersistenceType() {
+        return persistence.getClass().getSimpleName();
+    }
+
     // 主菜单
     public void runMainMenu() {
         while (true) {
@@ -58,14 +176,8 @@ public class ShoppingSystem {
             System.out.println("2.登录账号");
             System.out.println("3.忘记密码");
             System.out.println("0.退出系统");
-            System.out.print("请输入选择：");
-            int op;
-            try {
-                op = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("输入格式错误，请输入数字！");
-                scanner.nextLine();
+            int op = readMenuChoice(0, 3);
+            if (op < 0) {
                 continue;
             }
             if (op == 0) {
@@ -87,14 +199,14 @@ public class ShoppingSystem {
     private void registerMenu() {
         System.out.println("==== 注册账号 ====");
         System.out.println("1.注册顾客  2.注册管理员");
-        int select;
-        try {
-            select = scanner.nextInt();
-            scanner.nextLine();
-        } catch (InputMismatchException e) {
-            System.out.println("输入错误！");
-            scanner.nextLine();
+        int select = readInt("请选择（1.顾客 2.管理员）：", 0);
+
+        if (select != 1 && select != 2) {
+
+            System.out.println("输入无效，请输入 1 或 2！");
+
             return;
+
         }
 
         System.out.print("用户名：");
@@ -114,8 +226,17 @@ public class ShoppingSystem {
 
         System.out.print("手机号：");
         String phone = scanner.nextLine();
+        if (!tempUser.checkPhoneRule(phone)) {
+            System.out.println("手机号格式错误！请输入11位中国大陆手机号（1开头，第二位3-9）");
+            return;
+        }
+
         System.out.print("邮箱：");
         String email = scanner.nextLine();
+        if (!tempUser.checkEmailRule(email)) {
+            System.out.println("邮箱格式错误！请输入正确的邮箱地址（如：example@qq.com）");
+            return;
+        }
 
         // 密码加密后存入
         String encryptedPwd = PasswordUtil.encrypt(pwd);
@@ -278,14 +399,8 @@ public class ShoppingSystem {
             System.out.println("9.删除顾客");
             System.out.println("10.修改自身密码");
             System.out.println("0.退出登录");
-            System.out.print("请输入选择：");
-            int op;
-            try {
-                op = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("输入错误！");
-                scanner.nextLine();
+            int op = readMenuChoice(0, 3);
+            if (op < 0) {
                 continue;
             }
             if (op == 0) {
@@ -309,8 +424,7 @@ public class ShoppingSystem {
 
     private void addGoodsMenu(Administrator admin) {
         System.out.print("商品ID：");
-        int gid = scanner.nextInt();
-        scanner.nextLine();
+        int gid = readInt("", -1);
         System.out.print("商品名称：");
         String gname = scanner.nextLine();
         System.out.print("厂商：");
@@ -320,14 +434,11 @@ public class ShoppingSystem {
         System.out.print("型号：");
         String model = scanner.nextLine();
         System.out.print("进货价：");
-        double buyP = scanner.nextDouble();
-        scanner.nextLine();
+        double buyP = readDouble("", 0);
         System.out.print("零售价：");
-        double sellP = scanner.nextDouble();
-        scanner.nextLine();
+        double sellP = readDouble("", 0);
         System.out.print("库存：");
-        int stock = scanner.nextInt();
-        scanner.nextLine();
+        int stock = readInt("", 0);
         admin.addGoods(goodsRepository, new Goods(gid, gname, factory, date, model, buyP, sellP, stock));
         saveData();
         LogUtil.info("添加商品成功，ID：" + gid);
@@ -335,8 +446,7 @@ public class ShoppingSystem {
 
     private void updateGoodsMenu(Administrator admin) {
         System.out.print("要修改的商品ID：");
-        int gid = scanner.nextInt();
-        scanner.nextLine();
+        int gid = readInt("", -1);
         Goods oldGoods = null;
         for (Goods g : goodsRepository) {
             if (g.getGoodsId() == gid) {
@@ -382,8 +492,7 @@ public class ShoppingSystem {
 
     private void deleteGoodsMenu(Administrator admin) {
         System.out.print("要删除的商品ID：");
-        int gid = scanner.nextInt();
-        scanner.nextLine();
+        int gid = readInt("", -1);
         System.out.print("警告：删除后无法恢复，确认删除吗？(y/n)：");
         if (!scanner.nextLine().equalsIgnoreCase("y")) {
             System.out.println("已取消删除");
@@ -423,8 +532,7 @@ public class ShoppingSystem {
 
     private void resetCustomerPwdMenu(Administrator admin) {
         System.out.print("请输入顾客ID：");
-        int cid = scanner.nextInt();
-        scanner.nextLine();
+        int cid = readInt("", -1);
         Customer cust = null;
         for (Customer c : customerList) {
             if (c.getId() == cid) {
@@ -445,8 +553,7 @@ public class ShoppingSystem {
 
     private void deleteCustomerMenu(Administrator admin) {
         System.out.print("要删除的顾客ID：");
-        int cid = scanner.nextInt();
-        scanner.nextLine();
+        int cid = readInt("", -1);
         System.out.print("警告：删除后无法恢复，确认删除吗？(y/n)：");
         if (!scanner.nextLine().equalsIgnoreCase("y")) {
             System.out.println("已取消删除");
@@ -485,14 +592,8 @@ public class ShoppingSystem {
             System.out.println("7.查看购物历史");
             System.out.println("8.修改密码");
             System.out.println("0.退出登录");
-            System.out.print("请输入选择：");
-            int op;
-            try {
-                op = scanner.nextInt();
-                scanner.nextLine();
-            } catch (InputMismatchException e) {
-                System.out.println("输入错误！");
-                scanner.nextLine();
+            int op = readMenuChoice(0, 10);
+            if (op < 0) {
                 continue;
             }
             if (op == 0) {
@@ -517,11 +618,9 @@ public class ShoppingSystem {
 
     private void addCartMenu(Customer cust) {
         System.out.print("商品ID：");
-        int gid = scanner.nextInt();
-        scanner.nextLine();
+        int gid = readInt("", -1);
         System.out.print("购买数量：");
-        int num = scanner.nextInt();
-        scanner.nextLine();
+        int num = readInt("", -1);
         cust.addCart(gid, num, goodsRepository);
     }
 
@@ -538,18 +637,15 @@ public class ShoppingSystem {
 
     private void updateCartMenu(Customer cust) {
         System.out.print("商品ID：");
-        int gid = scanner.nextInt();
-        scanner.nextLine();
+        int gid = readInt("", -1);
         System.out.print("新数量（≤0自动移除）：");
-        cust.updateCartItemCount(gid, scanner.nextInt());
-        scanner.nextLine();
+        cust.updateCartItemCount(gid, readInt("", 0));
         System.out.println("修改成功！");
     }
 
     private void removeCartMenu(Customer cust) {
         System.out.print("要移除的商品ID：");
-        int gid = scanner.nextInt();
-        scanner.nextLine();
+        int gid = readInt("", -1);
         System.out.print("确认移除吗？(y/n)：");
         if (!scanner.nextLine().equalsIgnoreCase("y")) {
             System.out.println("已取消移除");
@@ -568,8 +664,7 @@ public class ShoppingSystem {
         System.out.println("==== 支付方式 ====");
         System.out.println("1.支付宝  2.微信  3.银行卡");
         System.out.print("请选择：");
-        int payOp = scanner.nextInt();
-        scanner.nextLine();
+        int payOp = readInt("", -1);
         String payMode = switch (payOp) {
             case 1 -> "支付宝";
             case 2 -> "微信";
@@ -631,12 +726,5 @@ public class ShoppingSystem {
             LogUtil.info("顾客修改密码成功，用户名：" + cust.getName());
             System.out.println("密码修改成功");
         } else System.out.println("旧密码错误或新密码不符合规则");
-    }
-
-    // 程序入口
-    public static void main(String[] args) {
-        ShoppingSystem sys = new ShoppingSystem();
-        sys.loadData();
-        sys.runMainMenu();
     }
 }

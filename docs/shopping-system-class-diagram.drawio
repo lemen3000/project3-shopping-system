@@ -1,0 +1,284 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="22.0.0" type="device">
+  <diagram id="shopping-class-diagram" name="购物管理系统类图">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="User" value="&lt;&lt;abstract&gt;&gt;&#10;User" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="380" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="User_at" value="- id: int&#10;- name: String&#10;- password: String&#10;- phone: String&#10;- email: String&#10;- registerTime: LocalDateTime&#10;- errorCount: int&#10;- isLock: boolean" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="User">
+          <mxGeometry y="34" width="380" height="144" as="geometry" />
+        </mxCell>
+        <mxCell id="User_mt" value="+ login(name, password): boolean&#10;+ logout(): void&#10;+ modifyPassword(oldPwd, newPwd): boolean&#10;+ showInfo(): void&#10;+ checkPasswordRule(pwd): boolean&#10;+ checkUserNameRule(name): boolean&#10;+ checkPhoneRule(phone): boolean&#10;+ checkEmailRule(email): boolean&#10;+ verifyUserAndEmail(name, mail): boolean&#10;+ resetRandomPwd(): String" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="User">
+          <mxGeometry y="178" width="380" height="178" as="geometry" />
+        </mxCell>
+        <mxCell id="UserOperation" value="&lt;&lt;interface&gt;&gt;&#10;UserOperation" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="40" y="530" width="380" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="UserOperation_mt" value="+ login(name, password): boolean&#10;+ logout(): void&#10;+ modifyPassword(oldPwd, newPwd): boolean" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="UserOperation">
+          <mxGeometry y="34" width="380" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="Customer" value="Customer" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="700" width="380" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="Customer_at" value="- receiveAddress: String&#10;- shoppingCart: ShoppingCart&#10;- orderList: List&lt;Order&gt;&#10;- customerRank: int&#10;- totalConsume: double" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Customer">
+          <mxGeometry y="34" width="380" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="Customer_mt" value="+ addCart(goodsId, num, store): void&#10;+ removeCartItem(goodsId): boolean&#10;+ updateCartItemCount(goodsId, newNum): void&#10;+ checkout(store, payMode): boolean&#10;+ showOrderHistory(): void&#10;+ showInfo(): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Customer">
+          <mxGeometry y="127" width="380" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="Administrator" value="Administrator" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1050" width="380" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="Administrator_mt" value="+ addGoods(goodsList, g): void&#10;+ deleteGoods(goodsList, goodsId): boolean&#10;+ updateGoods(goodsList, g): boolean&#10;+ searchGoods(list, name, factory, min, max): List&#10;+ listAllGoods(goodsList): void&#10;+ listAllCustomer(custList): void&#10;+ searchCustomer(custList, keyword): List&#10;+ resetCustomerPassword(cust): String&#10;+ deleteCustomer(custList, cid): boolean" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Administrator">
+          <mxGeometry y="34" width="380" height="161" as="geometry" />
+        </mxCell>
+        <mxCell id="ShoppingCart" value="ShoppingCart" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="560" y="60" width="400" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="ShoppingCart_at" value="- itemList: List&lt;CartItem&gt;" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="ShoppingCart">
+          <mxGeometry y="34" width="400" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="ShoppingCart_mt" value="+ addItem(goods, num): void&#10;+ removeItem(goodsId): boolean&#10;+ updateItemCount(goodsId, newNum): void&#10;+ calculateTotal(): double&#10;+ clearCart(): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="ShoppingCart">
+          <mxGeometry y="59" width="400" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="CartItem" value="CartItem" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="560" y="300" width="400" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="CartItem_at" value="- goods: Goods&#10;- buyNumber: int" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="CartItem">
+          <mxGeometry y="34" width="400" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="CartItem_mt" value="+ getSubtotal(): double&#10;+ getGoods(): Goods&#10;+ setBuyNumber(num): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="CartItem">
+          <mxGeometry y="76" width="400" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="Order" value="Order" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="560" y="510" width="400" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="Order_at" value="- orderNo: String&#10;- createTime: LocalDateTime&#10;- itemList: List&lt;CartItem&gt;&#10;- totalAmount: double&#10;- payMode: String" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Order">
+          <mxGeometry y="34" width="400" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="Order_mt" value="+ printOrderDetail(): void&#10;+ getOrderNo(): String&#10;+ getItemList(): List" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Order">
+          <mxGeometry y="127" width="400" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="Goods" value="Goods" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="560" y="760" width="400" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="Goods_at" value="- goodsId: int&#10;- goodsName: String&#10;- manufacturer: String&#10;- produceDate: String&#10;- model: String&#10;- purchasePrice: double&#10;- retailPrice: double&#10;- stock: int" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Goods">
+          <mxGeometry y="34" width="400" height="144" as="geometry" />
+        </mxCell>
+        <mxCell id="Goods_mt" value="+ getGoodsInfo(): String&#10;+ getStock(): int&#10;+ setStock(stock): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Goods">
+          <mxGeometry y="178" width="400" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="DataPack" value="DataPack" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="560" y="1100" width="400" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="DataPack_at" value="- admins: List&lt;Administrator&gt;&#10;- customers: List&lt;Customer&gt;&#10;- goods: List&lt;Goods&gt;" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="DataPack">
+          <mxGeometry y="34" width="400" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="DataPack_mt" value="+ DataPack(admins, customers, goods)" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="DataPack">
+          <mxGeometry y="93" width="400" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="Persistence" value="&lt;&lt;interface&gt;&gt;&#10;Persistence" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="60" width="440" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="Persistence_mt" value="+ saveAll(admins, customers, goods): void&#10;+ loadAll(): DataPack" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Persistence">
+          <mxGeometry y="34" width="440" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="TextFilePersistence" value="TextFilePersistence" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="260" width="440" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="BinaryPersistence" value="BinaryPersistence" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="336" width="440" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ExcelPersistence" value="ExcelPersistence" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="412" width="440" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="JdbcPersistence" value="JdbcPersistence" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="488" width="440" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="PersistenceFactory" value="PersistenceFactory" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="590" width="440" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="PersistenceFactory_at" value="- instance: Persistence" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="PersistenceFactory">
+          <mxGeometry y="34" width="440" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="PersistenceFactory_mt" value="+ getPersistence(): Persistence" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="PersistenceFactory">
+          <mxGeometry y="59" width="440" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="Main" value="Main" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="790" width="440" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="Main_mt" value="+ main(args: String[]): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="Main">
+          <mxGeometry y="34" width="440" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="ShoppingSystem" value="ShoppingSystem" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="920" width="440" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="ShoppingSystem_at" value="- adminList: List&lt;Administrator&gt;&#10;- customerList: List&lt;Customer&gt;&#10;- goodsRepository: List&lt;Goods&gt;&#10;- persistence: Persistence&#10;- scanner: Scanner" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="ShoppingSystem">
+          <mxGeometry y="34" width="440" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="ShoppingSystem_mt" value="+ loadData(): void&#10;+ runMainMenu(): void&#10;+ loginMenu(): void&#10;+ registerMenu(): void&#10;+ customerMenu(cust): void&#10;+ adminMenu(admin): void&#10;+ saveDataInternal(): void&#10;- readInt(tip, def): int&#10;- readDouble(tip, def): double&#10;- readMenuChoice(min, max): int" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="ShoppingSystem">
+          <mxGeometry y="127" width="440" height="178" as="geometry" />
+        </mxCell>
+        <mxCell id="MailOrderService" value="MailOrderService" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="60" width="420" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="MailOrderService_at" value="- system: ShoppingSystem&#10;- pollInterval: long&#10;- running: boolean" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="MailOrderService">
+          <mxGeometry y="34" width="420" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="MailOrderService_mt" value="+ start(): void&#10;+ run(): void&#10;- checkAndProcessMails(): void&#10;- processSingleMail(msg, from, content): void&#10;- replyMail(to, content): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="MailOrderService">
+          <mxGeometry y="93" width="420" height="93" as="geometry" />
+        </mxCell>
+        <mxCell id="MailUtil" value="MailUtil" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="360" width="420" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="MailUtil_mt" value="+ sendMail(to, subject, content): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="MailUtil">
+          <mxGeometry y="34" width="420" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="LogUtil" value="LogUtil" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="540" width="420" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="LogUtil_mt" value="+ info(msg): void&#10;+ warn(msg): void&#10;+ error(msg, e): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="LogUtil">
+          <mxGeometry y="34" width="420" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="PasswordUtil" value="PasswordUtil" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="720" width="420" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="PasswordUtil_mt" value="+ encrypt(raw): String&#10;+ verify(raw, stored): boolean" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="PasswordUtil">
+          <mxGeometry y="34" width="420" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="ImapTest" value="ImapTest" style="shape=umlClass;verticalAlign=top;horizontalAlign=center;strokeWidth=1;fontSize=13;fontStyle=1;spacingTop=6;spacingBottom=6;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="920" width="420" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="ImapTest_mt" value="+ main(args: String[]): void" style="text;align=left;verticalAlign=top;spacingLeft=8;spacingTop=4;fontSize=11;fontFamily=Consolas;wrap=false;" vertex="1" parent="ImapTest">
+          <mxGeometry y="34" width="420" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Customer__User" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.3;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Customer" target="User">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Customer__User_l" value="继承" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="90" y="495" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Administrator__User" style="endArrow=block;endFill=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Administrator" target="User">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Administrator__User_l" value="继承" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="470" y="1210" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Customer__UserOperation" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Customer" target="UserOperation">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Customer__UserOperation_l" value="实现" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="200" y="668" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_TextFilePersistence__Persistence" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="TextFilePersistence" target="Persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_TextFilePersistence__Persistence_l" value="实现" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="228" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_BinaryPersistence__Persistence" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="BinaryPersistence" target="Persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ExcelPersistence__Persistence" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="ExcelPersistence" target="Persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_JdbcPersistence__Persistence" style="endArrow=block;endFill=0;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="JdbcPersistence" target="Persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_PersistenceFactory__Persistence" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="PersistenceFactory" target="Persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_PersistenceFactory__Persistence_l" value="依赖" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="380" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ShoppingSystem__Persistence" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="ShoppingSystem" target="Persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ShoppingSystem__Persistence_l" value="依赖" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="1010" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Main__ShoppingSystem" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Main" target="ShoppingSystem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Main__ShoppingSystem_l" value="创建" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="895" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ShoppingSystem__MailOrderService" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="ShoppingSystem" target="MailOrderService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ShoppingSystem__MailOrderService_l" value="启动" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="880" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ShoppingCart__CartItem" style="endArrow=diamondThin;endFill=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="ShoppingCart" target="CartItem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ShoppingCart__CartItem_l" value="1..*" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="476" y="155" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_CartItem__Goods" style="endArrow=open;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="CartItem" target="Goods">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_CartItem__Goods_l" value="1" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="515" y="480" width="24" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Customer__ShoppingCart" style="endArrow=open;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Customer" target="ShoppingCart">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="480" y="770" />
+              <mxPoint x="480" y="160" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_Customer__ShoppingCart_l" value="1" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="452" y="980" width="24" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Customer__Order" style="endArrow=open;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Customer" target="Order">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="770" />
+              <mxPoint x="520" y="615" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_Customer__Order_l" value="1..*" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="452" y="1010" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Order__CartItem" style="endArrow=open;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Order" target="CartItem">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_Order__CartItem_l" value="1..*" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="505" y="470" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_Administrator__Goods" style="endArrow=open;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="Administrator" target="Goods">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="1335" />
+              <mxPoint x="520" y="900" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_Administrator__Goods_l" value="管理" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="430" y="1390" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_MailOrderService__MailUtil" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="MailOrderService" target="MailUtil">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_MailOrderService__MailUtil_l" value="使用" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1960" y="320" width="44" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e_MailOrderService__LogUtil" style="endArrow=open;dashed=1;html=1;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=1;" edge="1" parent="1" source="MailOrderService" target="LogUtil">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_MailOrderService__LogUtil_l" value="记录" style="text;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="1780" y="320" width="44" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -88,6 +88,18 @@ public abstract class User implements UserOperation, Serializable {
         return username != null && username.length() >= 5;
     }
 
+    // 手机号规则：中国大陆手机号，1开头，第二位3-9，共11位数字
+    public boolean checkPhoneRule(String phone) {
+        if (phone == null || phone.isBlank()) return false;
+        return phone.matches("^1[3-9]\\d{9}$");
+    }
+
+    // 邮箱规则：标准邮箱格式，用户名@域名.后缀
+    public boolean checkEmailRule(String email) {
+        if (email == null || email.isBlank()) return false;
+        return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
     // 验证用户名+邮箱
     public boolean verifyUserAndEmail(String uname, String mail) {
         return uname.equals(this.name) && mail.equals(this.email);

@@ -132,99 +132,114 @@ public class ExcelPersistence implements Persistence {
 
             // 加载管理员
             XSSFSheet adminSheet = workbook.getSheet("管理员");
-            for (int i = 1; i <= adminSheet.getLastRowNum(); i++) {
-                XSSFRow row = adminSheet.getRow(i);
-                Administrator admin = new Administrator(
-                        (int) row.getCell(0).getNumericCellValue(),
-                        row.getCell(1).getStringCellValue(),
-                        row.getCell(2).getStringCellValue(),
-                        row.getCell(3).getStringCellValue(),
-                        row.getCell(4).getStringCellValue(),
-                        LocalDateTime.parse(row.getCell(5).getStringCellValue(), FORMATTER),
-                        (int) row.getCell(6).getNumericCellValue(),
-                        row.getCell(7).getNumericCellValue() == 1
-                );
-                admins.add(admin);
+            if (adminSheet != null) {
+                for (int i = 1; i <= adminSheet.getLastRowNum(); i++) {
+                    XSSFRow row = adminSheet.getRow(i);
+                    if (row == null) continue;
+                    Administrator admin = new Administrator(
+                            (int) row.getCell(0).getNumericCellValue(),
+                            row.getCell(1).getStringCellValue(),
+                            row.getCell(2).getStringCellValue(),
+                            row.getCell(3).getStringCellValue(),
+                            row.getCell(4).getStringCellValue(),
+                            LocalDateTime.parse(row.getCell(5).getStringCellValue(), FORMATTER),
+                            (int) row.getCell(6).getNumericCellValue(),
+                            getBooleanCellValue(row.getCell(7))
+                    );
+                    admins.add(admin);
+                }
             }
 
             // 加载商品
             XSSFSheet goodsSheet = workbook.getSheet("商品");
-            for (int i = 1; i <= goodsSheet.getLastRowNum(); i++) {
-                XSSFRow row = goodsSheet.getRow(i);
-                Goods g = new Goods(
-                        (int) row.getCell(0).getNumericCellValue(),
-                        row.getCell(1).getStringCellValue(),
-                        row.getCell(2).getStringCellValue(),
-                        row.getCell(3).getStringCellValue(),
-                        row.getCell(4).getStringCellValue(),
-                        row.getCell(5).getNumericCellValue(),
-                        row.getCell(6).getNumericCellValue(),
-                        (int) row.getCell(7).getNumericCellValue()
-                );
-                goods.add(g);
+            if (goodsSheet != null) {
+                for (int i = 1; i <= goodsSheet.getLastRowNum(); i++) {
+                    XSSFRow row = goodsSheet.getRow(i);
+                    if (row == null) continue;
+                    Goods g = new Goods(
+                            (int) row.getCell(0).getNumericCellValue(),
+                            row.getCell(1).getStringCellValue(),
+                            row.getCell(2).getStringCellValue(),
+                            row.getCell(3).getStringCellValue(),
+                            row.getCell(4).getStringCellValue(),
+                            row.getCell(5).getNumericCellValue(),
+                            row.getCell(6).getNumericCellValue(),
+                            (int) row.getCell(7).getNumericCellValue()
+                    );
+                    goods.add(g);
+                }
             }
 
             // 加载顾客
             XSSFSheet custSheet = workbook.getSheet("顾客");
-            for (int i = 1; i <= custSheet.getLastRowNum(); i++) {
-                XSSFRow row = custSheet.getRow(i);
-                Customer cust = new Customer(
-                        (int) row.getCell(0).getNumericCellValue(),
-                        row.getCell(1).getStringCellValue(),
-                        row.getCell(2).getStringCellValue(),
-                        row.getCell(3).getStringCellValue(),
-                        row.getCell(4).getStringCellValue(),
-                        LocalDateTime.parse(row.getCell(5).getStringCellValue(), FORMATTER),
-                        (int) row.getCell(6).getNumericCellValue(),
-                        row.getCell(7).getNumericCellValue() == 1
-                );
-                cust.setCustomerRank((int) row.getCell(8).getNumericCellValue());
-                cust.setTotalConsume(row.getCell(9).getNumericCellValue());
-                cust.setReceiveAddress(row.getCell(10).getStringCellValue());
-                customers.add(cust);
+            if (custSheet != null) {
+                for (int i = 1; i <= custSheet.getLastRowNum(); i++) {
+                    XSSFRow row = custSheet.getRow(i);
+                    if (row == null) continue;
+                    Customer cust = new Customer(
+                            (int) row.getCell(0).getNumericCellValue(),
+                            row.getCell(1).getStringCellValue(),
+                            row.getCell(2).getStringCellValue(),
+                            row.getCell(3).getStringCellValue(),
+                            row.getCell(4).getStringCellValue(),
+                            LocalDateTime.parse(row.getCell(5).getStringCellValue(), FORMATTER),
+                            (int) row.getCell(6).getNumericCellValue(),
+                            getBooleanCellValue(row.getCell(7))
+                    );
+                    cust.setCustomerRank((int) row.getCell(8).getNumericCellValue());
+                    cust.setTotalConsume(row.getCell(9).getNumericCellValue());
+                    cust.setReceiveAddress(row.getCell(10).getStringCellValue());
+                    customers.add(cust);
+                }
             }
 
             // 加载订单
             XSSFSheet orderSheet = workbook.getSheet("订单");
-            for (int i = 1; i <= orderSheet.getLastRowNum(); i++) {
-                XSSFRow row = orderSheet.getRow(i);
-                int custId = (int) row.getCell(1).getNumericCellValue();
-                Customer owner = null;
-                for (Customer c : customers) {
-                    if (c.getId() == custId) {
-                        owner = c;
-                        break;
-                    }
-                }
-                if (owner == null) continue;
-
-                String detailStr = row.getCell(5).getStringCellValue();
-                List<CartItem> itemList = new ArrayList<>();
-                String[] items = detailStr.split(",");
-                for (String item : items) {
-                    String[] parts = item.split(":");
-                    int goodsId = Integer.parseInt(parts[0]);
-                    int num = Integer.parseInt(parts[1]);
-                    Goods matchGoods = null;
-                    for (Goods g : goods) {
-                        if (g.getGoodsId() == goodsId) {
-                            matchGoods = g;
+            if (orderSheet != null) {
+                for (int i = 1; i <= orderSheet.getLastRowNum(); i++) {
+                    XSSFRow row = orderSheet.getRow(i);
+                    if (row == null) continue;
+                    int custId = (int) row.getCell(1).getNumericCellValue();
+                    Customer owner = null;
+                    for (Customer c : customers) {
+                        if (c.getId() == custId) {
+                            owner = c;
                             break;
                         }
                     }
-                    if (matchGoods != null) {
-                        itemList.add(new CartItem(matchGoods, num));
-                    }
-                }
+                    if (owner == null) continue;
 
-                Order order = new Order(
-                        row.getCell(0).getStringCellValue(),
-                        LocalDateTime.parse(row.getCell(2).getStringCellValue(), FORMATTER),
-                        itemList,
-                        row.getCell(3).getNumericCellValue(),
-                        row.getCell(4).getStringCellValue()
-                );
-                owner.getOrderList().add(order);
+                    String detailStr = row.getCell(5).getStringCellValue();
+                    List<CartItem> itemList = new ArrayList<>();
+                    if (detailStr != null && !detailStr.isBlank()) {
+                        String[] items = detailStr.split(",");
+                        for (String item : items) {
+                            String[] parts = item.split(":");
+                            if (parts.length < 2) continue;
+                            int goodsId = Integer.parseInt(parts[0]);
+                            int num = Integer.parseInt(parts[1]);
+                            Goods matchGoods = null;
+                            for (Goods g : goods) {
+                                if (g.getGoodsId() == goodsId) {
+                                    matchGoods = g;
+                                    break;
+                                }
+                            }
+                            if (matchGoods != null) {
+                                itemList.add(new CartItem(matchGoods, num));
+                            }
+                        }
+                    }
+
+                    Order order = new Order(
+                            row.getCell(0).getStringCellValue(),
+                            LocalDateTime.parse(row.getCell(2).getStringCellValue(), FORMATTER),
+                            itemList,
+                            row.getCell(3).getNumericCellValue(),
+                            row.getCell(4).getStringCellValue()
+                    );
+                    owner.getOrderList().add(order);
+                }
             }
 
         } catch (Exception e) {
@@ -232,5 +247,25 @@ public class ExcelPersistence implements Persistence {
         }
 
         return new DataPack(admins, customers, goods);
+    }
+
+    /**
+     * 兼容读取布尔值：支持数字(1/0)、布尔(true/false)、字符串("true"/"1")
+     */
+    private boolean getBooleanCellValue(XSSFCell cell) {
+        if (cell == null) {
+            return false;
+        }
+        switch (cell.getCellType()) {
+            case BOOLEAN:
+                return cell.getBooleanCellValue();
+            case NUMERIC:
+                return cell.getNumericCellValue() == 1;
+            case STRING:
+                String str = cell.getStringCellValue().trim();
+                return "true".equalsIgnoreCase(str) || "1".equals(str);
+            default:
+                return false;
+        }
     }
 }

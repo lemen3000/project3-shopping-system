@@ -1,0 +1,106 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="22.0.0" type="device">
+  <diagram id="shopping-architecture" name="分层架构图">
+    <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="购物管理系统工程结构图（分层架构）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;fontSize=20;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1560" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="L1" value="表现层（Presentation Layer）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;fontStyle=1;align=center;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="1560" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="L1a" value="控制台主程序&#10;&lt;font style=&quot;font-size:11px&quot;&gt;Main / ShoppingSystem&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="140" width="320" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L1b" value="顾客交互界面&#10;&lt;font style=&quot;font-size:11px&quot;&gt;注册 / 登录 / 购物车 / 订单&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="430" y="140" width="320" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L1c" value="管理员交互界面&#10;&lt;font style=&quot;font-size:11px&quot;&gt;商品管理 / 顾客管理&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="780" y="140" width="320" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L1d" value="邮件交互入口&#10;&lt;font style=&quot;font-size:11px&quot;&gt;MailOrderService（IMAP 收信 / SMTP 回信）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="140" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" value="业务逻辑层（Business Logic Layer）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=16;fontStyle=1;align=center;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="340" width="1560" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="L2a" value="用户管理模块&#10;&lt;font style=&quot;font-size:11px&quot;&gt;User / Customer / Administrator&lt;br&gt;登录 · 注册 · 密码规则 · 锁定&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="390" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L2b" value="商品管理模块&#10;&lt;font style=&quot;font-size:11px&quot;&gt;Goods&lt;br&gt;增删改查 · 组合查询 · 库存&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="460" y="390" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L2c" value="购物车模块&#10;&lt;font style=&quot;font-size:11px&quot;&gt;ShoppingCart / CartItem&lt;br&gt;加入 · 改数量 · 小计 · 合计&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="840" y="390" width="340" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L2d" value="订单管理模块&#10;&lt;font style=&quot;font-size:11px&quot;&gt;Order&lt;br&gt;结账 · 生成 · 购物历史&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="390" width="330" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" value="服务层（Service Layer）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=16;fontStyle=1;align=center;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="590" width="1560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="L3a" value="邮件服务&#10;&lt;font style=&quot;font-size:11px&quot;&gt;MailUtil / MailOrderService&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="640" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L3b" value="日志服务&#10;&lt;font style=&quot;font-size:11px&quot;&gt;LogUtil（info / warn / error）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="450" y="640" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L3c" value="加密服务&#10;&lt;font style=&quot;font-size:11px&quot;&gt;PasswordUtil（SHA-256 加盐）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="820" y="640" width="330" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L3d" value="持久化工厂&#10;&lt;font style=&quot;font-size:11px&quot;&gt;PersistenceFactory（简单工厂模式）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="640" width="360" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L4" value="持久化层（Persistence Layer）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=16;fontStyle=1;align=center;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="830" width="1560" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="L4a" value="文本持久化&#10;&lt;font style=&quot;font-size:11px&quot;&gt;TextFilePersistence（*.txt）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="880" width="330" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="L4b" value="二进制持久化&#10;&lt;font style=&quot;font-size:11px&quot;&gt;BinaryPersistence（*.dat）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="450" y="880" width="330" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="L4c" value="Excel 持久化&#10;&lt;font style=&quot;font-size:11px&quot;&gt;ExcelPersistence（Apache POI，*.xlsx）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="820" y="880" width="330" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="L4d" value="SQLite 持久化&#10;&lt;font style=&quot;font-size:11px&quot;&gt;JdbcPersistence（JDBC，*.db）&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="880" width="360" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="L4e" value="Persistence 接口（统一读写标准：saveAll / loadAll）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=0;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1000" width="1470" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="L5" value="数据存储层（Data Storage）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=16;fontStyle=1;align=center;verticalAlign=top;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1080" width="1560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="L5a" value="users.txt / goods.txt&#10;orders.txt / shop_data.dat" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;fontStyle=0;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1130" width="270" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L5b" value="shop_data.xlsx&#10;（四个工作表）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;fontStyle=0;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1130" width="270" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L5c" value="shop_data.db&#10;（admin / customer /&#10;goods / orders）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;fontStyle=0;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="680" y="1130" width="270" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L5d" value="config.properties&#10;（持久化方式 / 邮件参数）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;fontStyle=0;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="980" y="1130" width="270" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="L5e" value="shop.log&#10;（运行日志）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=12;fontStyle=0;align=center;verticalAlign=middle;spacingLeft=8;spacingTop=4;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1130" width="270" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="a_L1_L2" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#37474f;" edge="1" parent="1" source="L1" target="L2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_L2_L3" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#37474f;" edge="1" parent="1" source="L2" target="L3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_L3_L4" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#37474f;" edge="1" parent="1" source="L3" target="L4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_L4_L5" style="endArrow=block;endFill=1;html=1;strokeWidth=2;strokeColor=#37474f;" edge="1" parent="1" source="L4" target="L5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
